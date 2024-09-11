@@ -128,7 +128,7 @@ export default {
         this.players = response.data;
         this.filteredPlayers = this.players;
       } catch (error) {
-        console.error("Error fetching player data:", error);
+        console.error("Error fetching player data :", error);
       }
     },
     filterPlayers() {
