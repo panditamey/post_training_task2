@@ -18,12 +18,9 @@
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <select v-model="selectedTeam" @change="filterPlayers">
               <option value="ALL">ALL</option>
-              <option value="ALL">ALL</option>
               <option value="IND">IND</option>
               <option value="PAK">PAK</option>
               <option value="AUS">AUS</option>
-              <option value="ENG">ENG</option>
-              <option value="ENG">ENG</option>
               <option value="ENG">ENG</option>
             </select>
           </ul>
@@ -90,28 +87,50 @@
 </template>
 
 <script>
-import playersData from "./players.json";
+import axios from "axios";
 
 export default {
   data() {
     return {
       selectedTeam: "ALL",
-      players: playersData.originalPlayers,
-      filteredPlayers: playersData.originalPlayers,
+      players: [],
+      filteredPlayers: [],
     };
+  },
+  created() {
+    this.fetchPlayersData();
   },
   computed: {
     batsmen() {
-      return this.filteredPlayers.filter((player) => player.role === 2);
+      return this.filteredPlayers
+        ? this.filteredPlayers.filter((player) => player.role === 2)
+        : [];
     },
     bowlers() {
-      return this.filteredPlayers.filter((player) => player.role === 4);
+      return this.filteredPlayers
+        ? this.filteredPlayers.filter((player) => player.role === 4)
+        : [];
     },
     allRounders() {
-      return this.filteredPlayers.filter((player) => player.role === 3);
+      return this.filteredPlayers
+        ? this.filteredPlayers.filter((player) => player.role === 3)
+        : [];
     },
   },
   methods: {
+    async fetchPlayersData() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/originalPlayers"
+        );
+
+        console.log(response.data);
+        this.players = response.data;
+        this.filteredPlayers = this.players;
+      } catch (error) {
+        console.error("Error fetching player data:", error);
+      }
+    },
     filterPlayers() {
       if (this.selectedTeam === "ALL") {
         this.filteredPlayers = this.players;
